@@ -13,10 +13,7 @@ export function Reveal({ children, delay = 0, className = '', as: Tag = 'div' })
   )
 }
 
-/**
- * Wrap a group of <Card>s. Moving the mouse anywhere over the group
- * lights up the border of every card near the cursor.
- */
+/** Moving the mouse over the group lights up the borders of nearby cards. */
 export function SpotlightGroup({ children, className = '' }) {
   const ref = useRef(null)
   const onMove = (e) => {
@@ -33,10 +30,7 @@ export function SpotlightGroup({ children, className = '' }) {
   )
 }
 
-/**
- * Solid card. `tilt` adds a 3-D tilt that follows the cursor plus a soft
- * glare. Works standalone or inside a SpotlightGroup.
- */
+/** Card. `tilt` adds a 3-D tilt that follows the cursor plus a soft glare. */
 export function Card({ children, className = '', tilt = false, as: Tag = 'div', ...rest }) {
   const glare = useRef(null)
   const onMove = (e) => {
@@ -47,12 +41,12 @@ export function Card({ children, className = '', tilt = false, as: Tag = 'div', 
     el.style.setProperty('--mx', `${x}px`)
     el.style.setProperty('--my', `${y}px`)
     if (tilt && finePointer()) {
-      const rx = (y / r.height - 0.5) * -8
-      const ry = (x / r.width - 0.5) * 8
-      el.style.transform = `perspective(1000px) rotateX(${rx}deg) rotateY(${ry}deg) translateZ(0)`
+      const rx = (y / r.height - 0.5) * -7
+      const ry = (x / r.width - 0.5) * 7
+      el.style.transform = `perspective(1000px) rotateX(${rx}deg) rotateY(${ry}deg)`
       if (glare.current) {
         glare.current.style.opacity = '1'
-        glare.current.style.background = `radial-gradient(500px circle at ${x}px ${y}px, rgb(255 255 255 / 0.07), transparent 45%)`
+        glare.current.style.background = `radial-gradient(500px circle at ${x}px ${y}px, rgb(255 255 255 / 0.08), transparent 45%)`
       }
     }
     rest.onMouseMove?.(e)
@@ -76,14 +70,12 @@ export function Card({ children, className = '', tilt = false, as: Tag = 'div', 
 }
 
 /** Pulls its child toward the cursor while hovered. */
-export function Magnetic({ children, strength = 0.35, className = '' }) {
+export function Magnetic({ children, strength = 0.3, className = '' }) {
   const ref = useRef(null)
   const onMove = (e) => {
     if (!finePointer()) return
     const r = ref.current.getBoundingClientRect()
-    const x = (e.clientX - (r.left + r.width / 2)) * strength
-    const y = (e.clientY - (r.top + r.height / 2)) * strength
-    ref.current.style.transform = `translate(${x}px, ${y}px)`
+    ref.current.style.transform = `translate(${(e.clientX - (r.left + r.width / 2)) * strength}px, ${(e.clientY - (r.top + r.height / 2)) * strength}px)`
   }
   const onLeave = () => (ref.current.style.transform = '')
   return (
@@ -93,15 +85,14 @@ export function Magnetic({ children, strength = 0.35, className = '' }) {
   )
 }
 
-/** Text that "decodes" from random glyphs when it scrolls into view. */
+/** Text that decodes from random glyphs when it scrolls into view. */
 export function Scramble({ text, className = '' }) {
   const [ref, visible] = useReveal()
   const [out, setOut] = useState(text)
   useEffect(() => {
     if (!visible) return
-    const glyphs = '!<>-_\\/[]{}—=+*^?#01'
+    const glyphs = '!<>-_\\/[]{}=+*^?#01'
     let frame = 0
-    const total = text.length * 2
     const id = setInterval(() => {
       frame++
       setOut(
@@ -110,7 +101,7 @@ export function Scramble({ text, className = '' }) {
           .map((c, i) => (c === ' ' || i < frame / 2 ? c : glyphs[Math.floor(Math.random() * glyphs.length)]))
           .join(''),
       )
-      if (frame >= total) clearInterval(id)
+      if (frame >= text.length * 2) clearInterval(id)
     }, 28)
     return () => clearInterval(id)
   }, [visible, text])
@@ -121,27 +112,46 @@ export function Scramble({ text, className = '' }) {
   )
 }
 
-/** Standard section shell. */
-export function Section({ id, eyebrow, title, intro, children, className = '' }) {
+/** Big condensed uppercase heading with an accent bar that wipes in. */
+export function Heading({ eyebrow, title, intro, aside, index }) {
+  const [ref, visible] = useReveal()
   return (
-    <section id={id} className={`relative scroll-mt-24 px-4 py-20 sm:px-6 md:py-28 ${className}`}>
-      <div className="mx-auto max-w-6xl">
-        <Reveal className="mb-12 max-w-2xl md:mb-16">
-          <p className="eyebrow mb-3">
-            <Scramble text={eyebrow} />
-          </p>
-          <h2 className="font-display text-3xl font-bold leading-tight text-fg text-balance sm:text-4xl md:text-5xl">{title}</h2>
-          {intro && <p className="mt-4 text-base text-muted sm:text-lg">{intro}</p>}
-        </Reveal>
-        {children}
+    <div ref={ref} className="mb-8 flex flex-wrap items-end justify-between gap-6 lg:mb-10">
+      <div className="max-w-3xl">
+        <p className="eyebrow mb-3 flex items-center gap-3">
+          {index && <span className="font-mono text-[11px] tracking-normal text-muted">{index}</span>}
+          <Scramble text={eyebrow} />
+        </p>
+        <h2 className="display text-5xl text-fg sm:text-6xl lg:text-7xl">{title}</h2>
+        <span
+          className={`mt-4 block h-1.5 w-24 origin-left bg-accent transition-transform duration-700 ease-out ${visible ? 'scale-x-100' : 'scale-x-0'}`}
+        />
+        {intro && <p className="mt-5 max-w-2xl text-base text-muted sm:text-lg">{intro}</p>}
       </div>
+      {aside}
+    </div>
+  )
+}
+
+/**
+ * A full-screen "panel". On desktop it fills the viewport and the page
+ * snaps to it. `tone="alt"` gives the panel the alternate background.
+ */
+export function Panel({ id, children, className = '', tone = 'base', free = false }) {
+  const bg = tone === 'alt' ? 'bg-raised/60' : tone === 'ink' ? 'bg-fg text-bg' : ''
+  return (
+    <section
+      id={id}
+      className={`${free ? 'panel-free' : 'panel'} relative flex flex-col justify-center px-4 pb-16 pt-24 sm:px-6 lg:px-16 lg:pb-12 ${bg} ${className}`}
+    >
+      <div className="mx-auto w-full max-w-6xl">{children}</div>
     </section>
   )
 }
 
 export function Chip({ children, className = '' }) {
   return (
-    <span className={`inline-flex items-center rounded-full border border-line bg-raised px-3 py-1 text-xs font-medium text-fg/80 ${className}`}>
+    <span className={`inline-flex items-center rounded-md border border-line bg-raised px-2.5 py-1 font-cond text-xs font-semibold uppercase tracking-wide text-fg/80 ${className}`}>
       {children}
     </span>
   )

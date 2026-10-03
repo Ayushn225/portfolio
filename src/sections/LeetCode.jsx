@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { SiLeetcode } from 'react-icons/si'
 import { LuAward, LuFlame, LuTrophy } from 'react-icons/lu'
 import { leetcode, profile } from '../data/portfolio'
-import { Card, Reveal, Section, SpotlightGroup } from '../components/ui'
+import { Card, Heading, Panel, Reveal, SpotlightGroup } from '../components/ui'
 import { useCountUp, useReveal } from '../hooks'
 
 const diff = [
@@ -50,7 +50,7 @@ function Ring({ focus, setFocus }) {
       </svg>
       <div className="pointer-events-none absolute inset-0 grid place-items-center text-center">
         <div>
-          <p className="font-display text-4xl font-extrabold tabular-nums text-fg">{f ? f.solved : n}</p>
+          <p className="display text-5xl text-fg">{f ? f.solved : n}</p>
           <p className="text-xs text-muted">{f ? `${diff.find((d) => d.key === focus).label} solved` : `of ${leetcode.total.toLocaleString()} solved`}</p>
         </div>
       </div>
@@ -67,7 +67,8 @@ export default function LeetCode() {
     { Icon: LuFlame, value: leetcode.streak, label: 'Best streak (days)' },
   ]
   return (
-    <Section id="leetcode" eyebrow="Competitive programming" title="LeetCode progress." intro="Data structures and algorithms practice, tracked over time.">
+    <Panel id="leetcode">
+      <Heading index="07" eyebrow="Competitive programming" title="LeetCode" intro="Data structures and algorithms practice, mostly in C++." />
       <SpotlightGroup className="grid gap-4 lg:grid-cols-[1fr_1.3fr]">
         <Reveal>
           <Card className="flex h-full flex-col items-center justify-center gap-6 p-7">
@@ -112,10 +113,10 @@ export default function LeetCode() {
             {tiles.map(({ Icon, value, label, sub }, i) => (
               <Reveal key={label} delay={120 + i * 70}>
                 <Card tilt className="group h-full p-5">
-                  <Icon className="text-xl text-accent transition-transform duration-300 group-hover:-translate-y-1 group-hover:scale-125" />
-                  <p className="mt-3 font-display text-2xl font-bold tabular-nums text-fg">{value}</p>
-                  <p className="text-xs text-muted">{label}</p>
-                  {sub && <p className="mt-1 text-xs font-semibold text-accent">{sub}</p>}
+                  <Icon className="text-xl text-accent2 transition-transform duration-300 group-hover:-translate-y-1 group-hover:scale-125" />
+                  <p className="display mt-3 text-4xl text-fg">{value}</p>
+                  <p className="font-cond text-xs font-bold uppercase tracking-widest text-muted">{label}</p>
+                  {sub && <p className="mt-1 font-cond text-xs font-bold uppercase tracking-wide text-accent2">{sub}</p>}
                 </Card>
               </Reveal>
             ))}
@@ -132,6 +133,6 @@ export default function LeetCode() {
           </Reveal>
         </div>
       </SpotlightGroup>
-    </Section>
+    </Panel>
   )
 }

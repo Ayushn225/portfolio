@@ -11,9 +11,16 @@ export default function Background() {
   useEffect(() => {
     const c = canvas.current
     const ctx = c.getContext('2d')
-    const css = getComputedStyle(document.documentElement)
-    const accent = css.getPropertyValue('--accent').trim().split(/\s+/).join(',')
-    const fg = css.getPropertyValue('--fg').trim().split(/\s+/).join(',')
+    let accent, fg
+    const readColors = () => {
+      const css = getComputedStyle(document.documentElement)
+      accent = css.getPropertyValue('--accent').trim().split(/\s+/).join(',')
+      fg = css.getPropertyValue('--dot').trim().split(/\s+/).join(',')
+    }
+    readColors()
+    const mq = window.matchMedia('(prefers-color-scheme: dark)')
+    window.addEventListener('themechange', readColors)
+    mq.addEventListener?.('change', readColors)
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     const fine = window.matchMedia('(pointer: fine)').matches
 
@@ -60,7 +67,7 @@ export default function Background() {
         const ox = dist ? (dx / dist) * push : 0
         const oy = dist ? (dy / dist) * push : 0
         const size = 1 + k * 1.8
-        ctx.fillStyle = k > 0.05 ? `rgba(${accent},${0.15 + k * 0.85})` : `rgba(${fg},0.09)`
+        ctx.fillStyle = k > 0.05 ? `rgba(${accent},${0.15 + k * 0.85})` : `rgba(${fg},0.10)`
         ctx.beginPath()
         ctx.arc(d.x + ox, d.y + oy, size, 0, Math.PI * 2)
         ctx.fill()
@@ -96,6 +103,8 @@ export default function Background() {
       window.removeEventListener('pointermove', onMove)
       document.removeEventListener('pointerleave', onLeave)
       window.removeEventListener('pointerdown', onClick)
+      window.removeEventListener('themechange', readColors)
+      mq.removeEventListener?.('change', readColors)
     }
   }, [])
 

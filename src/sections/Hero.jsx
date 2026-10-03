@@ -1,15 +1,15 @@
-import { LuArrowDown, LuArrowUpRight, LuMapPin } from 'react-icons/lu'
+import { LuArrowUpRight, LuMapPin } from 'react-icons/lu'
 import { profile } from '../data/portfolio'
 import { useTypewriter } from '../hooks'
 import Socials from '../components/Socials'
 import { Card, Magnetic } from '../components/ui'
 
-/** Splits a word into letters that rise in one after another. */
+/** Letters that rise in one after another. */
 function RiseText({ text, delay = 0, className = '' }) {
   return (
-    <span className={`inline-flex overflow-hidden pb-[0.08em] ${className}`} aria-label={text}>
+    <span className={`inline-flex overflow-hidden ${className}`} aria-label={text}>
       {text.split('').map((ch, i) => (
-        <span key={i} aria-hidden="true" className="inline-block animate-rise" style={{ animationDelay: `${delay + i * 45}ms` }}>
+        <span key={i} aria-hidden="true" className="inline-block animate-rise" style={{ animationDelay: `${delay + i * 55}ms` }}>
           {ch === ' ' ? ' ' : ch}
         </span>
       ))}
@@ -18,53 +18,49 @@ function RiseText({ text, delay = 0, className = '' }) {
 }
 
 function ProfileCard() {
-  const stats = profile.highlights
   return (
-    <Card tilt className="w-full max-w-sm overflow-hidden p-6 sm:p-7" data-cursor>
-      {/* dotted layer that drifts with the cursor for depth */}
-      <div
-        aria-hidden="true"
-        className="bg-dots pointer-events-none absolute -inset-10 opacity-70"
-        style={{ transform: 'translate(calc((var(--mx, 200px) - 200px) * -0.06), calc((var(--my, 200px) - 200px) * -0.06))' }}
-      />
-      <div className="relative [transform:translateZ(40px)]">
-        <div className="flex items-center gap-4">
-          <div className="relative grid h-16 w-16 shrink-0 place-items-center overflow-hidden rounded-2xl bg-accent font-display text-xl font-bold text-accent-fg">
-            {profile.avatar ? <img src={profile.avatar} alt="" className="h-full w-full object-cover" /> : profile.initials}
-          </div>
-          <div className="min-w-0">
-            <p className="font-display text-lg font-bold text-fg">
-              {profile.firstName} {profile.lastName}
-            </p>
-            <p className="truncate text-sm text-muted">{profile.roles[0]}</p>
-          </div>
+    <Card tilt className="w-full max-w-sm overflow-hidden" data-cursor>
+      {/* banner with stripes that drift with the cursor */}
+      <div className="relative h-28 overflow-hidden bg-accent">
+        <div
+          aria-hidden="true"
+          className="bg-stripes absolute -inset-10 opacity-60 mix-blend-overlay"
+          style={{ transform: 'translate(calc((var(--mx, 190px) - 190px) * -0.05), calc((var(--my, 150px) - 150px) * -0.05))' }}
+        />
+        <span className="absolute bottom-0 left-0 h-2 w-full bg-accent2" />
+        <span className="display absolute right-5 top-4 text-sm tracking-[0.2em] text-accent-fg/80">Portfolio · {new Date().getFullYear()}</span>
+      </div>
+      <div className="relative px-6 pb-6 [transform:translateZ(40px)]">
+        <div className="-mt-10 grid h-20 w-20 place-items-center overflow-hidden rounded-xl border-4 border-surface bg-fg font-display text-3xl text-bg">
+          {profile.avatar ? <img src={profile.avatar} alt="" className="h-full w-full object-cover" /> : profile.initials}
         </div>
+        <p className="display mt-4 text-3xl text-fg">
+          {profile.firstName} {profile.lastName}
+        </p>
+        <p className="font-cond text-sm font-semibold uppercase tracking-wide text-muted">{profile.roles[0]}</p>
 
         {profile.available && (
-          <div className="mt-5 flex items-center gap-2 rounded-xl border border-line bg-bg/60 px-3 py-2 text-xs font-semibold text-fg/90">
+          <div className="mt-4 inline-flex items-center gap-2 rounded-md bg-accent/10 px-3 py-1.5 font-cond text-xs font-bold uppercase tracking-wide text-accent">
             <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-easy opacity-70" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-easy" />
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-70" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-accent" />
             </span>
             {profile.availableText}
           </div>
         )}
 
-        <div className="mt-5 grid grid-cols-3 divide-x divide-line rounded-2xl border border-line bg-bg/60">
-          {stats.map((s) => (
-            <div key={s.l} className="px-2 py-3 text-center">
-              <p className="font-display text-lg font-bold tabular-nums text-fg">{s.v}</p>
-              <p className="text-[11px] uppercase tracking-wider text-muted">{s.l}</p>
+        <div className="mt-5 grid grid-cols-3 divide-x divide-line border-y border-line">
+          {profile.highlights.map((s) => (
+            <div key={s.l} className="py-3 text-center">
+              <p className="display text-2xl text-fg">{s.v}</p>
+              <p className="font-cond text-[11px] font-bold uppercase tracking-widest text-muted">{s.l}</p>
             </div>
           ))}
         </div>
 
-        <div className="mt-5 flex items-center justify-between font-mono text-[11px] text-muted">
-          <span className="inline-flex items-center gap-1">
-            <LuMapPin /> {profile.location}
-          </span>
-          <span className="[@media(pointer:coarse)]:hidden">move your cursor ✦</span>
-        </div>
+        <p className="mt-4 inline-flex items-center gap-1.5 font-cond text-xs uppercase tracking-wide text-muted">
+          <LuMapPin className="text-accent2" /> {profile.location}
+        </p>
       </div>
     </Card>
   )
@@ -72,41 +68,47 @@ function ProfileCard() {
 
 export default function Hero() {
   const role = useTypewriter(profile.roles)
-
   return (
-    <section id="top" className="relative px-4 pb-16 pt-32 sm:px-6 md:pb-24 md:pt-40">
-      <div className="mx-auto grid max-w-6xl items-center gap-14 lg:grid-cols-[1.3fr_1fr]">
-        <div className="text-center lg:text-left">
-          <p className="eyebrow mb-6 animate-rise" style={{ animationDelay: '0ms' }}>
-            Hello, world
-          </p>
-          <h1 className="font-display text-[2.7rem] font-extrabold leading-[1.02] tracking-tight text-fg sm:text-6xl lg:text-7xl">
-            <RiseText text="I'm" delay={100} className="mr-[0.25em]" />
-            <RiseText text={profile.firstName} delay={260} className="text-accent" />
+    <section id="top" className="panel relative flex flex-col justify-center overflow-hidden px-4 pb-16 pt-28 sm:px-6 lg:px-16 lg:pb-12">
+      {/* oversized outline initials in the background */}
+      <span
+        aria-hidden="true"
+        className="display pointer-events-none absolute -bottom-10 -left-4 select-none text-[38vw] leading-none text-transparent opacity-[0.07] [-webkit-text-stroke:2px_rgb(var(--fg))] lg:text-[26vw]"
+      >
+        {profile.initials}
+      </span>
+
+      <div className="relative mx-auto grid w-full max-w-6xl items-center gap-12 lg:grid-cols-[1.35fr_1fr]">
+        <div>
+          <p className="eyebrow mb-5 animate-rise">Hello, I'm</p>
+          <h1 className="display text-[22vw] text-fg sm:text-[9rem] lg:text-[10rem]">
+            <RiseText text={profile.firstName} delay={100} />
+            <br />
+            <RiseText text={profile.lastName} delay={350} className="text-accent" />
           </h1>
 
-          <p className="mt-6 h-8 font-mono text-lg text-fg/85 sm:text-xl" aria-live="polite">
-            <span className="text-accent">$ </span>
+          <p className="mt-6 h-8 font-cond text-xl font-bold uppercase tracking-wide text-fg sm:text-2xl" aria-live="polite">
+            <span className="mr-2 inline-block h-[3px] w-8 bg-accent2 align-middle" />
             {role}
-            <span className="ml-0.5 inline-block w-[2px] animate-blink bg-accent align-middle" style={{ height: '1.1em' }} />
+            <span className="ml-1 inline-block w-[3px] animate-blink bg-accent2 align-middle" style={{ height: '1em' }} />
           </p>
 
-          <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-muted sm:text-lg lg:mx-0">{profile.tagline}</p>
+          <p className="mt-5 max-w-xl text-base leading-relaxed text-muted sm:text-lg">{profile.tagline}</p>
 
-          <div className="mt-9 flex flex-wrap items-center justify-center gap-3 lg:justify-start">
+          <div className="mt-8 flex flex-wrap items-center gap-3">
             <Magnetic>
               <a href="#projects" className="btn-primary">
-                View my work <LuArrowUpRight />
+                View projects <LuArrowUpRight />
               </a>
             </Magnetic>
             <Magnetic>
-              <a href="#contact" className="btn-ghost">
-                Get in touch
+              <a href={profile.resumeUrl} target="_blank" rel="noreferrer" className="btn-ghost">
+                Resume
               </a>
             </Magnetic>
           </div>
 
-          <div className="mt-8 flex justify-center lg:justify-start">
+          <div className="mt-8 lg:hidden">
             <Socials />
           </div>
         </div>
@@ -116,12 +118,12 @@ export default function Hero() {
         </div>
       </div>
 
-      <a
-        href="#about"
-        aria-label="Scroll to about"
-        className="mx-auto mt-16 hidden h-12 w-7 items-start justify-center rounded-full border border-line p-1.5 text-muted transition hover:border-accent hover:text-accent md:flex"
-      >
-        <LuArrowDown className="animate-bounce" />
+      {/* mouse scroll hint, like the reference site */}
+      <a href="#about" aria-label="Scroll to about" className="absolute bottom-6 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-2 text-muted lg:flex">
+        <span className="flex h-10 w-6 justify-center rounded-full border-2 border-current pt-2">
+          <span className="h-2 w-1 animate-bounce rounded-full bg-accent2" />
+        </span>
+        <span className="font-cond text-[10px] font-bold uppercase tracking-[0.3em]">Scroll</span>
       </a>
     </section>
   )

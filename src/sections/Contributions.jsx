@@ -2,10 +2,10 @@ import { useMemo, useState } from 'react'
 import { FaGithub } from 'react-icons/fa6'
 import { LuArrowUpRight } from 'react-icons/lu'
 import { contributions, profile, projects } from '../data/portfolio'
-import { Card, Reveal, Section, SpotlightGroup } from '../components/ui'
+import { Card, Heading, Panel, Reveal, SpotlightGroup } from '../components/ui'
 import { useCountUp, useReveal } from '../hooks'
 
-const levels = ['bg-raised', 'bg-accent/30', 'bg-accent/55', 'bg-accent/80', 'bg-accent']
+const levels = ['bg-raised', 'bg-accent/30', 'bg-accent/55', 'bg-accent/80', 'bg-accent2']
 const levelOf = (n) => (n === 0 ? 0 : n <= 2 ? 1 : n <= 4 ? 2 : n <= 7 ? 3 : 4)
 const CELL = 15 // 12px square + 3px gap
 
@@ -45,10 +45,10 @@ function StatTile({ value, label }) {
   const n = useCountUp(value, visible)
   return (
     <Card className="p-5">
-      <p ref={ref} className="font-display text-2xl font-bold tabular-nums text-fg sm:text-3xl">
+      <p ref={ref} className="display text-4xl text-fg">
         {n.toLocaleString()}
       </p>
-      <p className="mt-1 text-xs text-muted sm:text-sm">{label}</p>
+      <p className="mt-2 font-cond text-xs font-bold uppercase tracking-widest text-muted">{label}</p>
     </Card>
   )
 }
@@ -69,7 +69,8 @@ export default function Contributions() {
   const repos = projects.filter((p) => p.github)
 
   return (
-    <Section id="contributions" eyebrow="GitHub" title="Code activity." intro="Public GitHub contributions over the past year, and the repositories behind my projects.">
+    <Panel id="github" tone="alt">
+      <Heading index="06" eyebrow="Open source" title="GitHub activity" intro="Public contributions over the past year, and the repositories behind my projects." />
       <SpotlightGroup className="grid grid-cols-1 gap-4 [&>*]:min-w-0">
         <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
           {stats.map((s, i) => (
@@ -82,13 +83,13 @@ export default function Contributions() {
         <Reveal>
           <Card className="p-5 sm:p-7">
             <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
-              <a href={profile.socials.github} target="_blank" rel="noreferrer" className="flex items-center gap-2 font-display text-base font-bold text-fg hover:text-accent">
+              <a href={profile.socials.github} target="_blank" rel="noreferrer" className="flex items-center gap-2 font-cond text-lg font-bold uppercase tracking-wide text-fg hover:text-accent">
                 <FaGithub /> @{contributions.githubUser}
               </a>
               <p className="min-h-[1.25rem] font-mono text-xs text-muted" aria-live="polite">
                 {hover ? (
                   <>
-                    <span className="text-accent">
+                    <span className="font-bold text-accent2">
                       {hover.count} contribution{hover.count === 1 ? '' : 's'}
                     </span>{' '}
                     · {fmtDate(hover.key)}
@@ -137,11 +138,11 @@ export default function Contributions() {
           </Card>
         </Reveal>
 
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-2 gap-3 lg:grid-cols-6">
           {repos.map((r, i) => (
             <Reveal key={r.title} delay={(i % 3) * 70}>
-              <Card as="a" href={r.github} target="_blank" rel="noreferrer" className="group flex h-full items-start gap-4 p-5">
-                <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-raised text-lg text-fg transition-all duration-300 group-hover:-rotate-12 group-hover:bg-accent group-hover:text-accent-fg">
+              <Card as="a" href={r.github} target="_blank" rel="noreferrer" title={r.github.split('/').pop()} className="group flex h-full items-start gap-3 p-4">
+                <span className="grid h-8 w-8 shrink-0 place-items-center rounded-md bg-raised lg:hidden text-base text-fg transition-all duration-300 group-hover:-rotate-12 group-hover:bg-accent group-hover:text-accent-fg">
                   <FaGithub />
                 </span>
                 <div className="min-w-0 flex-1">
@@ -149,13 +150,13 @@ export default function Contributions() {
                     {r.github.split('/').pop()}
                     <LuArrowUpRight className="shrink-0 text-accent opacity-0 transition-opacity group-hover:opacity-100" />
                   </p>
-                  <p className="mt-1 text-xs text-muted">{r.tags.slice(0, 3).join(' · ')}</p>
+                  <p className="mt-0.5 truncate text-xs text-muted">{r.tags[0]}</p>
                 </div>
               </Card>
             </Reveal>
           ))}
         </div>
       </SpotlightGroup>
-    </Section>
+    </Panel>
   )
 }

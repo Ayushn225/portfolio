@@ -96,3 +96,27 @@ export function useCountUp(end, start, duration = 1400, decimals = 0) {
   }, [end, start, duration, decimals])
   return val
 }
+
+/**
+ * Light / dark theme. Starts from the saved choice, otherwise follows
+ * the operating system. Returns [theme, toggle].
+ */
+export function useTheme() {
+  const system = () => (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+  const [theme, setTheme] = useState(() => {
+    if (typeof document === 'undefined') return 'light'
+    return document.documentElement.getAttribute('data-theme') || system()
+  })
+  const toggle = () => {
+    const next = theme === 'dark' ? 'light' : 'dark'
+    setTheme(next)
+    document.documentElement.setAttribute('data-theme', next)
+    try {
+      localStorage.setItem('theme', next)
+    } catch {
+      /* storage unavailable — the choice lasts for this visit only */
+    }
+    window.dispatchEvent(new Event('themechange'))
+  }
+  return [theme, toggle]
+}

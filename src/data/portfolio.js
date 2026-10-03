@@ -98,6 +98,50 @@ export const education = [
   },
 ]
 
+/* "My Journey" slider — one slide per milestone, oldest first. */
+export const journey = [
+  {
+    year: '2021',
+    period: '2021 — 2023',
+    tag: 'School',
+    title: 'Kendriya Vidyalaya AGCR',
+    text: 'Finished CBSE Class X with 96% and Class XII with 95% in New Delhi. Also played badminton at district level.',
+    chips: ['Class X: 96%', 'Class XII: 95%'],
+  },
+  {
+    year: '2024',
+    period: '2024 — 2028',
+    tag: 'University',
+    title: 'B.Tech CSE at Delhi Technological University',
+    text: 'Studying Computer Science and Engineering. Current CGPA 9.06 / 10.',
+    chips: ['CGPA 9.06', 'DSA', 'OOP'],
+  },
+  {
+    year: '2024',
+    period: '2024 — Present',
+    tag: 'Practice',
+    title: 'Started competitive programming',
+    text: 'Daily problem solving in C++ on LeetCode and rated contests on Codeforces, reaching a max rating of 1316 (Pupil).',
+    chips: ['C++', 'LeetCode', 'Codeforces'],
+  },
+  {
+    year: '2025',
+    period: 'May — Jul 2025',
+    tag: 'Internship',
+    title: 'Software Development Intern, DMRC',
+    text: 'Worked on web modules of an HR Management System at Delhi Metro Rail Corporation: responsive frontend, backend integration and AI-enabled workflow automation.',
+    chips: ['HRMS', 'Frontend', 'Backend', 'AI features'],
+  },
+  {
+    year: '2026',
+    period: '2026',
+    tag: 'Milestone',
+    title: '1,000+ LeetCode problems',
+    text: 'Crossed 1,018 solved problems and a 1853 contest rating, placing in the top 6.37% globally across 30 contests.',
+    chips: ['1018 solved', 'Rating 1853', 'Top 6.37%'],
+  },
+]
+
 export const skills = [
   { group: 'Languages', items: ['Python', 'C++', 'C#', 'Java', 'JavaScript', 'TypeScript', 'SQL'] },
   { group: 'Frameworks', items: ['React', 'React Native', 'Expo', 'Node.js', 'Express.js', 'LangChain', 'LangGraph', 'Streamlit'] },
@@ -223,12 +267,24 @@ export const achievements = [
   },
 ]
 
+// Links in the top bar
 export const navLinks = [
   { id: 'about', label: 'About' },
-  { id: 'experience', label: 'Experience' },
-  { id: 'education', label: 'Education' },
+  { id: 'journey', label: 'Journey' },
   { id: 'projects', label: 'Projects' },
-  { id: 'contributions', label: 'GitHub' },
+  { id: 'github', label: 'GitHub' },
+  { id: 'leetcode', label: 'LeetCode' },
+  { id: 'contact', label: 'Contact' },
+]
+
+// Every full-screen panel, in order — drives the dot navigation on the right
+export const panels = [
+  { id: 'top', label: 'Home' },
+  { id: 'about', label: 'About' },
+  { id: 'journey', label: 'Journey' },
+  { id: 'toolkit', label: 'Toolkit' },
+  { id: 'projects', label: 'Projects' },
+  { id: 'github', label: 'GitHub' },
   { id: 'leetcode', label: 'LeetCode' },
   { id: 'contact', label: 'Contact' },
 ]
