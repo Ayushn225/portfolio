@@ -62,7 +62,7 @@ export default function LeetCode() {
   const [ref, visible] = useReveal()
   const [focus, setFocus] = useState(null)
   const tiles = [
-    { Icon: LuTrophy, value: leetcode.rating, label: 'Contest rating', sub: leetcode.topPercent },
+    { Icon: LuTrophy, value: leetcode.rating, label: 'Contest rating', sub: leetcode.topPercent, href: profile.socials.leetcode },
     { Icon: LuAward, value: leetcode.contests, label: 'Contests attended', sub: `${leetcode.activeDays} active days` },
     { Icon: LuFlame, value: leetcode.streak, label: 'Best streak (days)' },
   ]
@@ -110,9 +110,9 @@ export default function LeetCode() {
           </Reveal>
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-            {tiles.map(({ Icon, value, label, sub }, i) => (
+            {tiles.map(({ Icon, value, label, sub, href }, i) => (
               <Reveal key={label} delay={120 + i * 70}>
-                <Card tilt className="group h-full p-5">
+                <Card tilt {...(href ? { as: 'a', href, target: '_blank', rel: 'noreferrer', title: 'Open LeetCode profile' } : {})} className="group block h-full p-5">
                   <Icon className="text-xl text-accent2 transition-transform duration-300 group-hover:-translate-y-1 group-hover:scale-125" />
                   <p className="display mt-3 text-4xl text-fg">{value}</p>
                   <p className="font-cond text-xs font-bold uppercase tracking-widest text-muted">{label}</p>

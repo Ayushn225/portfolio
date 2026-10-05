@@ -1,19 +1,27 @@
 import { useEffect, useState } from 'react'
 import { LuClock, LuFlame, LuHammer, LuSparkles } from 'react-icons/lu'
-import { about, profile } from '../data/portfolio'
+import { SiCodeforces, SiLeetcode } from 'react-icons/si'
+import { LuArrowUpRight } from 'react-icons/lu'
+import { about, credentials, profile, resolveLink } from '../data/portfolio'
 import { Card, Heading, Panel, Reveal, SpotlightGroup } from '../components/ui'
 import { useCountUp, useReveal } from '../hooks'
 
-function Stat({ value, label, decimals = 0 }) {
+function Stat({ value, label, decimals = 0, href }) {
   const [ref, visible] = useReveal()
   const n = useCountUp(value, visible, 1400, decimals)
+  const url = resolveLink(href)
+  const link = url ? { as: 'a', href: url, target: '_blank', rel: 'noreferrer', title: 'Open profile' } : {}
   return (
-    <Card tilt className="flex h-full flex-col justify-between p-5">
+    <Card tilt {...link} className={`group flex h-full flex-col justify-between p-5 ${url ? 'cursor-pointer' : ''}`}>
+      {url ? (
+        <LuArrowUpRight className="absolute right-4 top-4 text-lg text-accent2 transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+      ) : (
+        <span className="absolute right-4 top-4 h-2 w-2 rounded-full bg-accent2" />
+      )}
       <div ref={ref} className="display text-4xl text-fg sm:text-5xl">
         {n.toFixed(decimals)}
       </div>
       <p className="mt-3 font-cond text-xs font-bold uppercase tracking-widest text-muted">{label}</p>
-      <span className="absolute right-4 top-4 h-2 w-2 rounded-full bg-accent2" />
     </Card>
   )
 }
@@ -47,6 +55,34 @@ export default function About() {
           <Reveal delay={150} className="mt-6 flex flex-wrap items-center gap-4">
             <Clock />
             <span className="font-cond text-xs font-bold uppercase tracking-widest text-muted">{profile.location}</span>
+          </Reveal>
+
+          {/* where I've been — name strip */}
+          <Reveal delay={220} className="mt-8 grid grid-cols-2 border-y-2 border-fg sm:grid-cols-4">
+            {credentials.map((c, i) => {
+              const url = resolveLink(c.href)
+              const Icon = c.icon === 'leetcode' ? SiLeetcode : c.icon === 'codeforces' ? SiCodeforces : null
+              const body = (
+                <>
+                  <span className="font-cond text-[10px] font-bold uppercase tracking-[0.2em] text-muted">{c.kind}</span>
+                  <span className="display mt-1 flex items-center gap-1.5 text-2xl text-fg">
+                    {Icon && <Icon className="text-lg text-accent2" />}
+                    {c.short}
+                  </span>
+                  <span className="mt-0.5 text-[11px] leading-tight text-muted">{c.detail}</span>
+                </>
+              )
+              const cls = `flex flex-col px-3 py-3 ${i % 2 ? 'border-l border-line' : ''} ${i > 1 ? 'border-t border-line sm:border-t-0' : ''} ${i === 2 ? 'sm:border-l' : ''}`
+              return url ? (
+                <a key={c.name} href={url} target="_blank" rel="noreferrer" title={c.name} className={`${cls} transition hover:bg-accent/10`}>
+                  {body}
+                </a>
+              ) : (
+                <div key={c.name} title={c.name} className={cls}>
+                  {body}
+                </div>
+              )
+            })}
           </Reveal>
         </div>
 

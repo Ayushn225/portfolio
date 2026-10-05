@@ -15,7 +15,7 @@ export const profile = {
   timezone: 'Asia/Kolkata', // used by the live clock card
   email: 'ayushn454@gmail.com',
   available: true,
-  availableText: 'Open to internships',
+  availableText: 'Open to SDE & AI/ML internships',
   resumeUrl: 'resume.pdf', // file lives in /public
   avatar: null, // e.g. 'avatar.jpg' — drop the file into /public
   // three numbers on the hero profile card
@@ -24,10 +24,17 @@ export const profile = {
     { v: '1853', l: 'Rating' },
     { v: '9.06', l: 'CGPA' },
   ],
+  // Proof chips under the name in the hero. `href` makes a chip a link.
+  proof: [
+    { label: 'DTU CSE · CGPA 9.06' },
+    { label: '1,018 LeetCode · Top 6.37%', href: 'https://leetcode.com/u/ayushn_225/' },
+    { label: 'Ex-SDE Intern · DMRC' },
+  ],
   socials: {
     github: 'https://github.com/Ayushn225',
     linkedin: 'https://www.linkedin.com/in/ayush-negi-a75084318/',
     leetcode: 'https://leetcode.com/u/ayushn_225/',
+    codeforces: '', // add your profile link, e.g. 'https://codeforces.com/profile/<handle>'
     twitter: '',
   },
 }
@@ -44,10 +51,10 @@ export const about = {
     { k: 'Practising', v: 'Daily LeetCode, with a 119-day best streak' },
   ],
   stats: [
-    { value: 9.06, decimals: 2, suffix: '', label: 'CGPA at DTU' },
-    { value: 1018, suffix: '', label: 'LeetCode problems solved' },
-    { value: 1853, suffix: '', label: 'LeetCode contest rating' },
-    { value: 1316, suffix: '', label: 'Codeforces max rating' },
+    { value: 9.06, decimals: 2, label: 'CGPA at DTU' },
+    { value: 1018, label: 'LeetCode problems solved', href: 'https://leetcode.com/u/ayushn_225/' },
+    { value: 1853, label: 'LeetCode contest rating', href: 'https://leetcode.com/u/ayushn_225/' },
+    { value: 1316, label: 'Codeforces max rating', href: 'codeforces' }, // uses socials.codeforces when set
   ],
 }
 
@@ -96,6 +103,14 @@ export const education = [
     location: 'New Delhi',
     highlights: [],
   },
+]
+
+/* "Where I've been" strip in the About section. */
+export const credentials = [
+  { kind: 'Studying at', name: 'Delhi Technological University', short: 'DTU', detail: 'B.Tech CSE · 2024–28' },
+  { kind: 'Interned at', name: 'Delhi Metro Rail Corporation', short: 'DMRC', detail: 'SDE Intern · 2025' },
+  { kind: 'Competing on', name: 'LeetCode', short: 'LC', detail: 'Rating 1853 · Top 6.37%', href: 'https://leetcode.com/u/ayushn_225/', icon: 'leetcode' },
+  { kind: 'Competing on', name: 'Codeforces', short: 'CF', detail: 'Max 1316 · Pupil', href: 'codeforces', icon: 'codeforces' },
 ]
 
 /* "My Journey" slider — one slide per milestone, oldest first. */
@@ -149,62 +164,181 @@ export const skills = [
   { group: 'Fundamentals', items: ['Data Structures & Algorithms', 'OOP', 'Software Testing', 'Debugging'] },
 ]
 
+/* Projects. `cover` picks the mockup shown on the card; `caseStudy`
+   fills the case-study overlay. Order = order on the page. */
 export const projects = [
   {
+    slug: 'shopping-agent',
     title: 'AI Shopping Agent',
     description:
-      'Conversational shopping assistant with LLM tool calling for product search, preferences, reviews, order history and checkout. Deterministic SQLite tools keep app logic separate from the LLM, and a two-layer eval suite checks multi-turn tool accuracy plus LLM-as-a-judge guardrails.',
+      'Conversational shopping assistant that answers only from real store data. The LLM picks from 7 deterministic SQLite tools to search, rate, track preferences and check out, and a pytest eval suite checks its tool calls.',
     category: 'AI / ML',
-    tags: ['Python', 'LangGraph', 'Groq', 'SQLite', 'Streamlit'],
+    tags: ['Python', 'LangGraph', 'Groq', 'SQLite', 'Streamlit', 'pytest'],
     github: 'https://github.com/Ayushn225/shopping_agent',
     live: '',
     featured: true,
+    cover: { type: 'agent' },
+    facts: [
+      { v: '7', l: 'Agent tools' },
+      { v: '2', l: 'LLMs (text + vision)' },
+      { v: '6', l: 'Eval cases' },
+    ],
+    caseStudy: {
+      problem:
+        'Shopping chatbots often invent products or can only talk, not act. I wanted an assistant that answers strictly from the store\'s own data, can carry out real actions like ordering, and refuses anything off-topic.',
+      approach: [
+        'Built the agent with LangChain / LangGraph on Groq: llama-3.3-70b-versatile does the reasoning and tool calling, and a Llama 4 Scout vision model describes product photos users upload.',
+        'Wrote 7 deterministic Python tools over SQLite: search_products, get_rating, checkout, get_order_history, get_user_preferences, update_user_preferences and describe_product_image. The LLM decides what to call; the data logic stays in plain, testable code.',
+        'Seeded a SQLite store with products, reviews and orders tables.',
+        'Saved preferences such as "organic only" or "nothing over $50" are applied to every search automatically unless the user overrides them.',
+        'Guardrails live in the system prompt: small talk is allowed, off-topic requests get a fixed refusal with no tool calls, and an order is placed only after the user explicitly confirms.',
+        'Streamlit chat UI with an image upload in the sidebar for search-by-photo.',
+      ],
+      architecture: 'agent',
+      evaluation: [
+        '4 tool-call accuracy cases, including multi-turn ones. Example: "Find me organic honey under $20" must call search_products with query "honey", max_price 20 and is_organic true.',
+        '2 LLM-as-a-judge cases that score output format and check that "write a poem about shoes" gets the guardrail refusal.',
+        'Run with: uv run pytest test_agent_eval.py -v',
+      ],
+    },
   },
   {
+    slug: 'tastemate',
     title: 'tasteMate',
     description:
-      'Cross-platform recipe discovery app with category filters, search and saved collections. Clerk auth with Convex queries keeps saved recipes per user; long-press multi-select batch delete and image fallbacks.',
+      'Cross-platform recipe app with category filters, search and saved collections that sync per user. Clerk handles sign-in, Convex stores saved recipes, and long-press enables multi-select batch delete.',
     category: 'Mobile',
-    tags: ['React Native', 'Expo', 'TypeScript', 'Clerk', 'Convex', 'Zustand'],
+    tags: ['React Native', 'Expo', 'TypeScript', 'Clerk', 'Convex', 'Zustand', 'NativeWind'],
     github: 'https://github.com/Ayushn225/mealApp',
     live: '',
     featured: true,
+    cover: { type: 'phones', shots: ['shots/tastemate-portal.webp', 'shots/tastemate-discover.webp', 'shots/tastemate-saved.webp'] },
+    facts: [
+      { v: '4', l: 'Screens' },
+      { v: '3', l: 'Convex tables' },
+      { v: 'iOS + Android', l: 'One codebase' },
+    ],
+    caseStudy: {
+      problem:
+        'I wanted a recipe app where the meals you save follow you across devices, and where cleaning up a long saved list is quick instead of one delete at a time.',
+      approach: [
+        'Expo Router with file-based routes: a portal screen plus Discover, Saved and Profile tabs.',
+        'Recipes come from TheMealDB API, browsable through category pills (Chicken, Pasta, Dessert and more) and a search bar.',
+        'Clerk handles sign-in, including an SSO callback. Saving a recipe while signed out stores the action in a Zustand store and completes it after login.',
+        'Convex holds users and savedMeals tables, indexed by user and by user + meal, with queries and mutations for saving and removing.',
+        'Saved list: images fall back to a fresh TheMealDB lookup if the stored URL fails; single delete with confirmation; long-press turns on multi-select with a floating action bar for batch delete.',
+        'Styled with NativeWind (Tailwind for React Native), with haptic feedback on key actions.',
+      ],
+      architecture: 'screens',
+      screens: [
+        { src: 'shots/tastemate-portal.webp', label: 'Portal' },
+        { src: 'shots/tastemate-discover.webp', label: 'Discover' },
+        { src: 'shots/tastemate-saved.webp', label: 'Saved' },
+        { src: 'shots/tastemate-profile.webp', label: 'Profile' },
+      ],
+    },
   },
   {
+    slug: 'code-aggregator',
+    title: 'Code Aggregator',
+    description:
+      'Self-hosted chat UI for a Claude coding agent. Add a local project as a workspace, open sessions inside it, and chat over WebSockets while the Claude Agent SDK reads and runs code in that folder. Workspaces and sessions persist in MongoDB.',
+    category: 'AI / ML',
+    tags: ['TypeScript', 'React 19', 'Bun', 'Turborepo', 'WebSocket', 'MongoDB', 'Claude Agent SDK'],
+    github: 'https://github.com/Ayushn225/codeAgg',
+    live: '',
+    featured: true,
+    cover: { type: 'browser', image: 'shots/code-aggregator.webp', url: 'localhost:1573' },
+    facts: [
+      { v: '2', l: 'Apps (web + ws)' },
+      { v: '5', l: 'Shared packages' },
+      { v: 'Bun', l: 'Runtime' },
+    ],
+    caseStudy: {
+      problem:
+        'I wanted my own web interface for a coding agent: point it at any project on my machine, keep separate conversations per project, and come back to them later instead of losing history when a terminal closes.',
+      approach: [
+        'Bun + Turborepo monorepo with two apps (a React frontend and a WebSocket backend) and shared packages for message types, database models and tooling config.',
+        'The backend is a ws server on port 3000. Each message is routed to the Claude Agent SDK, scoped to the workspace folder, and the reply streams back over the socket.',
+        'Workspaces (a local project path) and their sessions are stored in MongoDB through Mongoose models in a shared db package.',
+        'A common package defines the message types and schemas, so the frontend and backend agree on the WebSocket protocol.',
+        'React 19 + Tailwind frontend: sidebar to add workspaces and start sessions with message counts, a chat view that shows each tool the agent runs (e.g. Bash), and Shift+Enter for multi-line input.',
+        'MongoDB runs locally in Docker with a named volume so data survives container restarts.',
+      ],
+      architecture: 'browser',
+    },
+  },
+  {
+    slug: 'auth-service',
+    title: 'Auth Service',
+    description:
+      'Express + TypeScript authentication API: email verification, JWT access and refresh tokens in an httpOnly cookie, refresh rotation, password reset, and role-based routes for admins.',
+    category: 'Backend',
+    tags: ['TypeScript', 'Express', 'MongoDB', 'JWT', 'Zod', 'Nodemailer'],
+    github: 'https://github.com/Ayushn225/auth',
+    live: '',
+    featured: false,
+    cover: {
+      type: 'terminal',
+      lines: [
+        'POST /registration      → verify email',
+        'GET  /api/auth/verify-email',
+        'POST /login             → access 30m · refresh 7d',
+        'POST /refresh           → rotate tokens',
+        'POST /logout',
+        'POST /forgot-password   → 15 min reset link',
+        'POST /reset-password    → revoke sessions',
+        'GET  /users/me          requireAuth',
+        "GET  /admin/users       requireRole(['admin'])",
+      ],
+    },
+    caseStudy: {
+      problem: 'A reusable authentication backend that handles the parts tutorials usually skip: verification, token rotation, revoking sessions and roles.',
+      approach: [
+        'Registration validated with Zod, passwords hashed with bcrypt, and a verification email sent through Nodemailer / Mailtrap.',
+        'Short-lived access token (30 min) plus a 7-day refresh token in an httpOnly, SameSite=Lax cookie; /refresh rotates both.',
+        'Each user has a tokenVersion. Resetting the password bumps it, which invalidates every existing session.',
+        'Password reset tokens are stored hashed and expire after 15 minutes.',
+        'requireAuth and requireRole([\'admin\']) middleware protect user and admin routes.',
+      ],
+      architecture: 'terminal',
+    },
+  },
+  {
+    slug: 'smart-rockets',
     title: 'Smart Rockets',
-    description: 'Rockets learn to reach a target around obstacles. Each generation evolves its DNA with a genetic algorithm, simulated in the browser.',
+    description:
+      'Fifty rockets learn to fly around walls to a target. Each rocket\'s DNA is a sequence of 250 steering moves; every generation the fittest are bred and mutated. Click to move the target.',
     category: 'Simulations',
     tags: ['JavaScript', 'p5.js', 'Genetic algorithm'],
     github: 'https://github.com/Ayushn225/smartRockets',
-    live: '',
+    live: 'demos/smart-rockets/index.html',
     featured: false,
+    cover: { type: 'browser', image: 'shots/smart-rockets.webp', url: 'demos/smart-rockets' },
   },
   {
+    slug: 'interactive-selection',
     title: 'Interactive Selection',
-    description: 'Interactive evolution of flowers: you pick the ones you like and the population breeds the next generation from them.',
+    description:
+      'Evolution steered by the viewer: a flower\'s fitness is how long you hover over it. Press "Next Generation" and the population breeds from your favourites, with 14 genes for colour, petals and stem.',
     category: 'Simulations',
     tags: ['JavaScript', 'p5.js', 'Evolutionary'],
     github: 'https://github.com/Ayushn225/interactive-selection',
-    live: '',
+    live: 'demos/interactive-selection/index.html',
     featured: false,
+    cover: { type: 'browser', image: 'shots/interactive-selection.webp', url: 'demos/interactive-selection' },
   },
   {
-    title: 'Voronoi',
-    description: 'Generative Voronoi diagram sketch built with p5.js.',
-    category: 'Simulations',
-    tags: ['JavaScript', 'p5.js', 'Generative art'],
-    github: 'https://github.com/Ayushn225/voronoi',
+    slug: 'kafka-orders',
+    title: 'Kafka Order Events',
+    description:
+      'Event-driven practice project: a producer publishes ORDER_PLACED events to a 3-partition topic, and separate notification and analytics consumer groups each receive every event independently.',
+    category: 'Backend',
+    tags: ['TypeScript', 'Kafka', 'kafkajs', 'Docker'],
+    github: 'https://github.com/Ayushn225/kafkaBasic',
     live: '',
     featured: false,
-  },
-  {
-    title: 'Platformer Game',
-    description: '2D platformer built in Unity with C#.',
-    category: 'Games',
-    tags: ['C#', 'Unity'],
-    github: 'https://github.com/Ayushn225/PlatformerGame',
-    live: '',
-    featured: false,
+    cover: { type: 'kafka' },
   },
 ]
 
@@ -288,3 +422,6 @@ export const panels = [
   { id: 'leetcode', label: 'LeetCode' },
   { id: 'contact', label: 'Contact' },
 ]
+
+/** Turns a link value into a URL. A social key such as 'codeforces' resolves to that profile link (or '' if unset). */
+export const resolveLink = (href) => (href && href in profile.socials ? profile.socials[href] || '' : href || '')

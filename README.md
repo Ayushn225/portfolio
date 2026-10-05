@@ -9,6 +9,9 @@ Built with **React 19**, **Vite 6** and **Tailwind CSS 3**. The only other depen
 - **Full-screen sections that snap.** On desktop each section is one screen tall and scrolling moves you to the next section. A dot navigation on the right shows where you are (`03 / 08`) and labels each dot on hover. Phones and short windows scroll normally.
 - **Sliders.** The Journey and Projects sections are sliders with arrows, a counter, a progress bar, swipe on touch and drag with the mouse. Journey also plays through its slides on its own and pauses when you hover over it.
 - **Light and dark mode.** It follows your system setting until you click the sun/moon button, and then remembers your choice. The saved theme is applied before the page draws, so it never flashes the wrong theme.
+- **Case studies.** The project cards open a full-screen case study (problem → how I built it → architecture or screens → evaluation). You can link straight to one with `#case-<slug>`, for example `#case-shopping-agent`.
+- **Real mockups and live demos.** tasteMate is shown in phone frames using real screenshots, the shopping agent and the Kafka project have architecture diagrams, the auth API is shown as a terminal of its routes, and the two p5.js simulations run live from `public/demos/`.
+- **Proof up front.** Chips under the name in the hero show CGPA, LeetCode rank and the DMRC internship. Stat tiles link to the profiles that back them up, and the About section has a strip showing where I study, interned and compete.
 - **Interactive details:**
   - a dot background that reacts to the cursor (click for a ripple)
   - card borders that light up near the cursor, and cards that tilt
@@ -26,7 +29,7 @@ Built with **React 19**, **Vite 6** and **Tailwind CSS 3**. The only other depen
 | 02 | About | Bio, live local clock (IST), count-up stats, "Right now" card |
 | 03 | Journey | Timeline slider by year: school → DTU → competitive programming → DMRC internship → LeetCode milestone |
 | 04 | Toolkit | Skill groups and a scrolling ticker |
-| 05 | Projects | Filterable project slider |
+| 05 | Projects | Filterable slider with mockups, live demos and case studies |
 | 06 | GitHub | Contribution grid from real data, stats, repository links |
 | 07 | LeetCode | Difficulty ring and bars, contest rating, streak, badges |
 | 08 | Contact | Achievements, email with a copy button, contact form, footer |
@@ -48,7 +51,10 @@ All of the text and numbers live in **`src/data/portfolio.js`**: profile, about,
 
 - **Resume:** replace `public/resume.pdf`.
 - **Profile photo:** add `public/avatar.jpg` and set `profile.avatar = 'avatar.jpg'`.
-- **Project screenshot:** add `image: 'shots/name.png'` to a project (files go in `public/`).
+- **Project cover:** set `cover` on a project: `{ type: 'phones', shots: [...] }`, `{ type: 'browser', image, url }`, `{ type: 'terminal', lines: [...] }`, or `'agent'` / `'kafka'` for the built-in diagrams. Images go in `public/shots/`.
+- **Case study:** add a `caseStudy` object (`problem`, `approach[]`, `architecture`, optional `screens[]` and `evaluation[]`) and the card gets a "Case study" button.
+- **Live demo:** put a static build in `public/demos/<name>/` and set `live: 'demos/<name>/index.html'`.
+- **Codeforces link:** set `profile.socials.codeforces` and the Codeforces stat and strip become links.
 - **Journey slide:** add an object to the `journey` array.
 
 ## Changing the colours
@@ -77,12 +83,16 @@ src/
     Carousel.jsx          slider (snap, drag, arrows, counter)
     Background.jsx        dot background that reacts to the cursor
     Socials.jsx           social icon row
+    Mockups.jsx           phone / browser / terminal frames, architecture diagrams
+    CaseStudy.jsx         full-screen case-study overlay
     ui.jsx                Panel, Heading, Card, SpotlightGroup, Magnetic, Scramble, Chip
   sections/
     Hero  About  Journey  Toolkit  Projects  Contributions  LeetCode  Contact
   index.css               colour tokens, snap rules, buttons, cards
 public/
   resume.pdf  favicon.svg
+  shots/                  project screenshots (webp)
+  demos/                  live p5.js demos (Smart Rockets, Interactive Selection)
 ```
 
 ## Deploying

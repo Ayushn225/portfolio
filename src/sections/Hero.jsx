@@ -1,4 +1,4 @@
-import { LuArrowUpRight, LuMapPin } from 'react-icons/lu'
+import { LuArrowUpRight, LuBadgeCheck, LuMapPin } from 'react-icons/lu'
 import { profile } from '../data/portfolio'
 import { useTypewriter } from '../hooks'
 import Socials from '../components/Socials'
@@ -81,7 +81,7 @@ export default function Hero() {
       <div className="relative mx-auto grid w-full max-w-6xl items-center gap-12 lg:grid-cols-[1.35fr_1fr]">
         <div>
           <p className="eyebrow mb-5 animate-rise">Hello, I'm</p>
-          <h1 className="display text-[22vw] text-fg sm:text-[9rem] lg:text-[10rem]">
+          <h1 className="display text-[22vw] text-fg sm:text-[8.5rem] lg:text-[9rem]">
             <RiseText text={profile.firstName} delay={100} />
             <br />
             <RiseText text={profile.lastName} delay={350} className="text-accent" />
@@ -92,6 +92,32 @@ export default function Hero() {
             {role}
             <span className="ml-1 inline-block w-[3px] animate-blink bg-accent2 align-middle" style={{ height: '1em' }} />
           </p>
+
+          {/* proof chips — the three facts a recruiter should see first */}
+          <ul className="mt-6 flex flex-wrap gap-2">
+            {profile.proof.map((c, i) => {
+              const inner = (
+                <>
+                  <LuBadgeCheck className="shrink-0 text-accent2" />
+                  {c.label}
+                  {c.href && <LuArrowUpRight className="opacity-60" />}
+                </>
+              )
+              const cls =
+                'inline-flex animate-rise items-center gap-1.5 rounded-md border-2 border-fg/80 bg-surface px-3 py-1.5 font-cond text-sm font-bold uppercase tracking-wide text-fg'
+              return (
+                <li key={c.label} style={{ animationDelay: `${600 + i * 90}ms` }} className="animate-rise">
+                  {c.href ? (
+                    <a href={c.href} target="_blank" rel="noreferrer" className={`${cls} transition hover:border-accent hover:bg-accent hover:text-accent-fg`}>
+                      {inner}
+                    </a>
+                  ) : (
+                    <span className={cls}>{inner}</span>
+                  )}
+                </li>
+              )
+            })}
+          </ul>
 
           <p className="mt-5 max-w-xl text-base leading-relaxed text-muted sm:text-lg">{profile.tagline}</p>
 

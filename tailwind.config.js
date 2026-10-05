@@ -34,6 +34,7 @@ export default {
         rise: { from: { transform: 'translateY(110%)' }, to: { transform: 'translateY(0)' } },
         pulse_ring: { '0%': { transform: 'scale(1)', opacity: '.6' }, '100%': { transform: 'scale(2.4)', opacity: '0' } },
         wipe: { from: { transform: 'scaleX(0)' }, to: { transform: 'scaleX(1)' } },
+        slidein: { from: { transform: 'translateX(100%)' }, to: { transform: 'translateX(0)' } },
       },
       animation: {
         float: 'float 6s ease-in-out infinite',
@@ -42,6 +43,7 @@ export default {
         rise: 'rise .9s cubic-bezier(.2,.8,.2,1) both',
         'pulse-ring': 'pulse_ring 1.8s ease-out infinite',
         wipe: 'wipe .8s cubic-bezier(.7,0,.2,1) both',
+        slidein: 'slidein .5s cubic-bezier(.2,.8,.2,1) both',
       },
     },
   },

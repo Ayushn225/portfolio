@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Interactive Selection — live demo</title>
+    <link rel="stylesheet" href="../demo.css" />
+    <style>
+      main { position: relative; }
+      button { font: 600 14px system-ui; padding: 8px 14px; border-radius: 6px; border: 0; background: #ee9b00; color: #001219; cursor: pointer; }
+    </style>
+    <script src="../lib/p5.min.js"></script>
+  </head>
+  <body>
+    <header>
+      <h1>Interactive Selection</h1>
+      <p>Each flower's fitness is how long you hover over it. Hover over the ones you like, then press "Next Generation" to breed them. <a href="https://github.com/Ayushn225/interactive-selection">Source</a></p>
+    </header>
+    <main id="stage"></main>
+    <script src="sketch.js"></script>
+    <script src="Flower.js"></script>
+    <script src="DNA.js"></script>
+    <script src="Population.js"></script>
+    <script>
+      window.addEventListener('load', () => {
+        const stage = document.getElementById('stage')
+        const c = document.querySelector('canvas'); if (c) stage.appendChild(c)
+        const b = document.querySelector('body > button'); if (b) { b.style.position = 'static'; b.style.marginTop = '12px'; stage.appendChild(b) }
+      })
+    </script>
+  </body>
+</html>

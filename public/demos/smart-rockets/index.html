@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Smart Rockets — live demo</title>
+    <link rel="stylesheet" href="../demo.css" />
+    <script src="../lib/p5.min.js"></script>
+  </head>
+  <body>
+    <header>
+      <h1>Smart Rockets</h1>
+      <p>50 rockets evolve a path to the red target with a genetic algorithm. Click anywhere on the canvas to move the target. <a href="https://github.com/Ayushn225/smartRockets">Source</a></p>
+    </header>
+    <main id="stage"></main>
+    <script src="Population.js"></script>
+    <script src="Obstacle.js"></script>
+    <script src="Rocket.js"></script>
+    <script src="DNA.js"></script>
+    <script src="sketch.js"></script>
+    <script>
+      // place the p5 canvas inside <main>
+      window.addEventListener('load', () => { const c = document.querySelector('canvas'); if (c) document.getElementById('stage').appendChild(c) })
+    </script>
+  </body>
+</html>

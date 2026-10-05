@@ -105,7 +105,7 @@ export default function Carousel({ items, render, itemClass = 'w-[85%] sm:w-[48%
         ))}
       </div>
 
-      <div className="mt-5 flex items-center gap-5">
+      <div className="mt-5 flex items-center gap-5 pr-14 lg:pr-0">
         <div className="relative h-[3px] flex-1 overflow-hidden rounded-full bg-line">
           <div className="absolute inset-y-0 left-0 w-full origin-left bg-accent transition-transform duration-500" style={{ transform: `scaleX(${Math.max(0.08, atEnd ? 1 : progress)})` }} />
         </div>

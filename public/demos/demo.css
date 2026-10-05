@@ -1,0 +1,8 @@
+:root { color-scheme: dark; }
+html, body { margin: 0; min-height: 100%; background: #001219; color: #f3ead0; font: 15px/1.5 system-ui, sans-serif; }
+header { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 24px; padding: 16px 20px; border-bottom: 3px solid #ee9b00; }
+header h1 { margin: 0; font: 700 20px/1.2 'Arial Narrow', sans-serif; text-transform: uppercase; letter-spacing: .04em; color: #94d2bd; }
+header p { margin: 0; color: #96b0ac; max-width: 60ch; }
+header a { color: #ee9b00; font-weight: 600; }
+main { display: grid; place-items: center; padding: 20px 16px 32px; }
+main canvas { max-width: 100%; height: auto !important; border-radius: 8px; }
